@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -94,7 +95,7 @@ export default function ProductCatalog() {
   //   colors: [],
   //   sizes: [],
   //   features: [],
-  // })
+  // });
   const [viewMode, setViewMode] = useState("grid");
   const [showFilters, setShowFilters] = useState(false);
 
@@ -281,9 +282,11 @@ export default function ProductCatalog() {
 
                 <CardContent className="p-6">
                   <div className="mb-4">
-                    <h3 className="text-xl font-bold text-gray-800 mb-1">
-                      {product.name}
-                    </h3>
+                    <Link href={`/products/${product.id}`}>
+                      <h3 className="text-xl font-bold text-gray-800 mb-2 hover:text-pink-600 transition-colors line-clamp-2 cursor-pointer">
+                        {product.name}
+                      </h3>
+                    </Link>
                     <p className="text-pink-600 font-medium mb-1">
                       {product.subtitle}
                     </p>
@@ -340,9 +343,11 @@ export default function ProductCatalog() {
                   </div>
 
                   <div className="flex space-x-2">
-                    <Button className="flex-1 bg-pink-500 hover:bg-pink-600">
-                      Mua Ngay
-                    </Button>
+                    <Link href={`/products/${product.id}`}>
+                      <Button className="flex-1 bg-pink-500 hover:bg-pink-600">
+                        Mua Ngay
+                      </Button>
+                    </Link>
                     <Button variant="outline">Yêu cầu báo giá sỉ</Button>
                   </div>
                 </CardContent>

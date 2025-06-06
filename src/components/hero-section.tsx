@@ -1,9 +1,12 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Shield, Heart, Smartphone } from "lucide-react"
-
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Shield, Heart, Smartphone } from "lucide-react";
+import HeroVideoDialog from "./magicui/hero-video-dialog";
+import { useState } from "react";
 export default function HeroSection() {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
   return (
     <section className="bg-gradient-to-br from-pink-50 via-blue-50 to-purple-50 py-20">
       <div className="container mx-auto px-4">
@@ -11,13 +14,17 @@ export default function HeroSection() {
           {/* Content */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-800 leading-tight">Vòng Đeo Cổ Thông Minh</h1>
-              <p className="text-xl lg:text-2xl text-pink-600 font-medium">Bảo vệ thú cưng bằng công nghệ yêu thương</p>
+              <h1 className="text-4xl lg:text-6xl font-bold text-gray-800 leading-tight">
+                Vòng Đeo Cổ Thông Minh
+              </h1>
+              <p className="text-xl lg:text-2xl text-pink-600 font-medium">
+                Bảo vệ thú cưng bằng công nghệ yêu thương
+              </p>
             </div>
 
             <p className="text-lg text-gray-600 leading-relaxed">
-              Chúng tôi không chỉ bán thiết bị, chúng tôi trao gửi sự an tâm. Mỗi vòng cổ là một cam kết cho cuộc sống
-              thú cưng khỏe mạnh hơn.
+              Chúng tôi không chỉ bán thiết bị, chúng tôi trao gửi sự an tâm.
+              Mỗi vòng cổ là một cam kết cho cuộc sống thú cưng khỏe mạnh hơn.
             </p>
 
             {/* Features */}
@@ -38,14 +45,37 @@ export default function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/products">
-                <Button size="lg" className="bg-pink-500 hover:bg-pink-600 text-white">
+                <Button
+                  size="lg"
+                  className="bg-pink-500 hover:bg-pink-600 text-white"
+                >
                   Khám phá sản phẩm
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg">
+              <Link href="#">
+                <Button
+                  size="lg"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Tải app ngay
+                  <Smartphone className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setIsVideoOpen(true)}
+              >
                 Xem video demo
               </Button>
+              <HeroVideoDialog
+                className="block dark:hidden"
+                animationStyle="from-center"
+                videoSrc="https://www.youtube.com/embed/YLslsZuEaNE"
+                isVideoOpen={isVideoOpen}
+                setIsVideoOpen={setIsVideoOpen}
+              />
             </div>
           </div>
 
@@ -74,7 +104,9 @@ export default function HeroSection() {
             <div className="absolute -bottom-4 -left-4 bg-white rounded-lg shadow-lg p-4 max-w-xs">
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-blue-500 rounded-full" />
-                <span className="text-sm font-medium">Vị trí: Công viên Tao Đàn</span>
+                <span className="text-sm font-medium">
+                  Vị trí: Công viên Tao Đàn
+                </span>
               </div>
               <p className="text-xs text-gray-500 mt-1">Cách nhà 500m</p>
             </div>
@@ -82,5 +114,5 @@ export default function HeroSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
