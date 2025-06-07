@@ -79,8 +79,8 @@ const products = [
 
 const filters = {
   categories: ["Chó lớn", "Chó nhỏ", "Mèo", "Thú cưng đặc biệt"],
-  colors: ["Đen", "Xanh dương", "Hồng pastel", "Cam cá tính", "Trắng tối giản"],
-  sizes: ["S (Dưới 5kg)", "M (5–15kg)", "L (15–30kg)", "XL (trên 30kg)"],
+  colors: ["Đen", "Xanh dương", "Hồng pastel", "Cam năng động", "Trắng"],
+  sizes: ["S", "M", "L", "XL"],
   features: [
     "GPS siêu chính xác",
     "Theo dõi sức khỏe nâng cao",
@@ -90,14 +90,81 @@ const filters = {
 };
 
 export default function ProductCatalog() {
-  // const [selectedFilters, setSelectedFilters] = useState({
-  //   categories: [],
-  //   colors: [],
-  //   sizes: [],
-  //   features: [],
-  // });
+  const [selectedFilters, setSelectedFilters] = useState({
+    categories: [] as string[],
+    colors: [] as string[],
+    sizes: [] as string[],
+    features: [] as string[],
+  });
   const [viewMode, setViewMode] = useState("grid");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Thêm hàm để xử lý việc thay đổi filter
+  const handleFilterChange = (
+    type: keyof typeof selectedFilters, // keyof là keyword để lấy các key của object
+    // type là một trong các key của selectedFilters cụ thể là 'categories', 'colors', 'sizes', hoặc 'features'
+    // value là giá trị của filter mà người dùng chọn
+    value: string
+  ) => {
+    setSelectedFilters((prev) => {
+      const currentFilters = [...prev[type]];
+      if (currentFilters.includes(value)) {
+        return {
+          ...prev,
+          [type]: currentFilters.filter((item) => item !== value),
+        };
+      } else {
+        return {
+          ...prev,
+          [type]: [...currentFilters, value],
+        };
+      }
+    });
+  };
+
+  // Thêm hàm để xóa tất cả filter
+  const clearAllFilters = () => {
+    setSelectedFilters({
+      categories: [],
+      colors: [],
+      sizes: [],
+      features: [],
+    });
+  };
+
+  // Thêm logic lọc sản phẩm dựa trên filter đã chọn
+  const filteredProducts = products.filter((product) => {
+    // Nếu không có filter nào được chọn, hiển thị tất cả sản phẩm
+    if (
+      selectedFilters.categories.length === 0 &&
+      selectedFilters.colors.length === 0 &&
+      selectedFilters.sizes.length === 0 &&
+      selectedFilters.features.length === 0
+    ) {
+      return true;
+    }
+
+    // Kiểm tra từng loại filter
+    const matchesCategory =
+      selectedFilters.categories.length === 0 ||
+      selectedFilters.categories.includes(product.category);
+
+    const matchesColor =
+      selectedFilters.colors.length === 0 ||
+      product.colors.some((color) => selectedFilters.colors.includes(color));
+
+    const matchesSize =
+      selectedFilters.sizes.length === 0 ||
+      selectedFilters.sizes.includes(product.size);
+
+    const matchesFeature =
+      selectedFilters.features.length === 0 ||
+      product.features.some((feature) =>
+        selectedFilters.features.includes(feature)
+      );
+
+    return matchesCategory && matchesColor && matchesSize && matchesFeature;
+  });
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN").format(price);
@@ -124,7 +191,7 @@ export default function ProductCatalog() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-800">Bộ lọc</h3>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={clearAllFilters}>
                   Xóa tất cả
                 </Button>
               </div>
@@ -137,7 +204,13 @@ export default function ProductCatalog() {
                 <div className="space-y-2">
                   {filters.categories.map((category) => (
                     <div key={category} className="flex items-center space-x-2">
-                      <Checkbox id={category} />
+                      <Checkbox
+                        id={category}
+                        checked={selectedFilters.categories.includes(category)}
+                        onCheckedChange={() =>
+                          handleFilterChange("categories", category)
+                        }
+                      />
                       <label
                         htmlFor={category}
                         className="text-sm text-gray-600 cursor-pointer"
@@ -155,7 +228,13 @@ export default function ProductCatalog() {
                 <div className="space-y-2">
                   {filters.colors.map((color) => (
                     <div key={color} className="flex items-center space-x-2">
-                      <Checkbox id={color} />
+                      <Checkbox
+                        id={color}
+                        checked={selectedFilters.colors.includes(color)}
+                        onCheckedChange={() =>
+                          handleFilterChange("colors", color)
+                        }
+                      />
                       <label
                         htmlFor={color}
                         className="text-sm text-gray-600 cursor-pointer"
@@ -173,7 +252,13 @@ export default function ProductCatalog() {
                 <div className="space-y-2">
                   {filters.sizes.map((size) => (
                     <div key={size} className="flex items-center space-x-2">
-                      <Checkbox id={size} />
+                      <Checkbox
+                        id={size}
+                        checked={selectedFilters.sizes.includes(size)}
+                        onCheckedChange={() =>
+                          handleFilterChange("sizes", size)
+                        }
+                      />
                       <label
                         htmlFor={size}
                         className="text-sm text-gray-600 cursor-pointer"
@@ -193,7 +278,13 @@ export default function ProductCatalog() {
                 <div className="space-y-2">
                   {filters.features.map((feature) => (
                     <div key={feature} className="flex items-center space-x-2">
-                      <Checkbox id={feature} />
+                      <Checkbox
+                        id={feature}
+                        checked={selectedFilters.features.includes(feature)}
+                        onCheckedChange={() =>
+                          handleFilterChange("features", feature)
+                        }
+                      />
                       <label
                         htmlFor={feature}
                         className="text-sm text-gray-600 cursor-pointer"
@@ -220,10 +311,10 @@ export default function ProductCatalog() {
                 className="lg:hidden"
               >
                 <Filter className="h-4 w-4 mr-2" />
-                Bộ lọc
+                {showFilters ? "Ẩn bộ lọc" : "Bộ lọc"}
               </Button>
               <span className="text-sm text-gray-600">
-                Hiển thị {products.length} sản phẩm
+                Hiển thị {filteredProducts.length} sản phẩm
               </span>
             </div>
 
@@ -253,7 +344,7 @@ export default function ProductCatalog() {
                 : "grid-cols-1"
             }`}
           >
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <Card
                 key={product.id}
                 className="overflow-hidden hover:shadow-lg transition-shadow"
@@ -354,6 +445,22 @@ export default function ProductCatalog() {
               </Card>
             ))}
           </div>
+
+          {/* Empty state when no products match filters */}
+          {filteredProducts.length === 0 && (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <div className="text-gray-400 mb-4">
+                <Filter className="h-12 w-12 mx-auto" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-800 mb-2">
+                Không tìm thấy sản phẩm
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Không có sản phẩm nào phù hợp với bộ lọc đã chọn
+              </p>
+              <Button onClick={clearAllFilters}>Xóa tất cả bộ lọc</Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
